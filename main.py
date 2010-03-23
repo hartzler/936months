@@ -23,7 +23,7 @@ from google.appengine.ext.webapp import util
 class MainHandler(webapp.RequestHandler):
 
   def get(self):
-    self.response.out.write('Hello world!')
+    self.redirect('/static/index.html')
 
 
 def main():

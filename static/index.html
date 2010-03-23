@@ -10,24 +10,31 @@ var size=0;
 var chart = [];
 var mpl = 36;
 
+function round(num, dec) {
+	var result = Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+	return result;
+}
+
 function init() {
+  draw_chart();
 }
 
 function draw_chart() {
   var thisyear = (new Date()).getFullYear();
   var thismonth = (new Date()).getMonth()+1;
   var year = parseInt($('#birthdate').val().substring(0,4));
-  var month = parseInt($('#birthdate').val().substring(4,6));
+  var month = parseInt($('#birthdate').val().substring(4,6),10);
  
   var now = (thisyear - year)*12 + (thismonth-month);
 
-  var size = parseInt($('#expect').val()) * 12;
+  var years = parseInt($('#expect').val());
+  var size = years * 12;
   var table = '<table><tbody>';
 
-  table += '<tr><th colspan="2"></th>'; 
+  table += '<tr><th colspan="1">Age</th><th></th>'; 
   for(var i=0;i<mpl;i++)
     table += '<th style="width:1em;">' + months[(month-1+i)%12] + '</th>';
-  table += '</tr>'; 
+  table += '<th></th><th>Age</th></tr>'; 
 
   for(i=0;i<size;i++) {
     if(i%mpl==0)
@@ -44,8 +51,12 @@ function draw_chart() {
   for(var i=0;i<mpl;i++)
     table += '<th>' + months[(month-1+i)%12] + '</th>';
   table += '</tr>'; 
-
   table += '</tbody></table>';
+
+  // "\n%d months: %d (%.0f%%) lived: %d (%.0f%%) to go!" % [years*12, spent,spent.to_f/(years*12)*100,(years*12)-spent,((years*12)-spent).to_f/(years*12)*100]
+  var summary = '<div>' + size + ' months: ' + now + ' (' + round((now/size*100),0) + '%) lived; ' + (size-now) + ' (' + round((size-now)/size*100,0) + '%) to go!</div>';
+
+  table += summary;
   $('#chart').html(table);
 }
 
@@ -56,13 +67,20 @@ jQuery(document).ready(function($) {
 </script>
 </head>
 <body>
-<h1>LifeChart (Extra TM)</h1>
-Birthdate: <input id="birthdate" value="197710">
+<h1>936 Months</h1>
+<p>
+You can view your life as a series of 936 months assuming a life expectency of 78.  A month sure doesn't seem that long and when viewed as a whole sure don't look like very many.  Generate your own chart and be sure to make every single month count!</p>
+
+<p>
+Birthdate (YYYYMM): <input id="birthdate" value="197710">
 Life Expectancy: <input id="expect" value="78">
 <button id="gobutton" onclick="draw_chart();">Go!</button>
+</p>
 
 <div id="chart">
 </div>
+
+<p>Inspired by <a href="http://abstrusegoose.com/51">Abstruse Goose #51</a></p>
 
 </body>
 </html>
