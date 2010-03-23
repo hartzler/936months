@@ -1,0 +1,68 @@
+<html>
+<head>
+<style>
+</style>
+<script src="jquery.js"></script>
+<script>
+
+var months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+var size=0;
+var chart = [];
+var mpl = 36;
+
+function init() {
+}
+
+function draw_chart() {
+  var thisyear = (new Date()).getFullYear();
+  var thismonth = (new Date()).getMonth()+1;
+  var year = parseInt($('#birthdate').val().substring(0,4));
+  var month = parseInt($('#birthdate').val().substring(4,6));
+ 
+  var now = (thisyear - year)*12 + (thismonth-month);
+
+  var size = parseInt($('#expect').val()) * 12;
+  var table = '<table><tbody>';
+
+  table += '<tr><th colspan="2"></th>'; 
+  for(var i=0;i<mpl;i++)
+    table += '<th style="width:1em;">' + months[(month-1+i)%12] + '</th>';
+  table += '</tr>'; 
+
+  for(i=0;i<size;i++) {
+    if(i%mpl==0)
+      table += '<tr><th>' + (i/12) + '</th><th>' + (year+(i/12)) + '</th>';
+    
+    p= (i == now) ? 'X' : '.';
+
+    table += '<td align="center">' + p + '</td>';
+    if((i+1)%mpl==0)
+      table += '<th>' + (year+((i+1)/12)) + '</th><th>' + Math.floor(i/12) + '</tr>';
+  }
+
+  table += '<tr><th colspan="2"></th>'; 
+  for(var i=0;i<mpl;i++)
+    table += '<th>' + months[(month-1+i)%12] + '</th>';
+  table += '</tr>'; 
+
+  table += '</tbody></table>';
+  $('#chart').html(table);
+}
+
+jQuery(document).ready(function($) {
+  init();
+});
+
+</script>
+</head>
+<body>
+<h1>LifeChart (Extra TM)</h1>
+Birthdate: <input id="birthdate" value="197710">
+Life Expectancy: <input id="expect" value="78">
+<button id="gobutton" onclick="draw_chart();">Go!</button>
+
+<div id="chart">
+</div>
+
+</body>
+</html>
