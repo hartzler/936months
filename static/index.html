@@ -1,6 +1,65 @@
 <html>
 <head>
-<style>
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap.no-icons.min.css" rel="stylesheet">
+<link href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
+<style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+      }
+
+      /* Custom container */
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 700px;
+      }
+  
+      input {
+        width: 100px;
+      }
+
+      .params {
+        text-align: center;
+      }
+
+      #summary {
+        padding-bottom: 1em;
+        text-align: center;
+      }
+
+      #chart {
+        text-align: center;
+      }
+
+      table, .table {
+        width: 300px;
+        font-size: 11pt;
+        border-spacing: 0px;
+        margin-left:auto; 
+        margin-right:auto;
+      }
+
+      .table th, .table td { 
+        line-height: 11px;
+      }
+ 
+      .table-condensed th {
+        padding: 2px 1px 2px 1px;
+        font-weight: normal;
+        font-size: 8pt;
+      }
+      .table-condensed td {
+        padding: 1px 1px;
+      }
+  
+      .inspired {
+        padding: 1em;
+        text-align: center;
+      }
+
+      .future {
+        color: #888;
+      }
 </style>
 <script src="jquery.js"></script>
 <script>
@@ -29,7 +88,7 @@ function draw_chart() {
 
   var years = parseInt($('#expect').val());
   var size = years * 12;
-  var table = '<table><tbody>';
+  var table = '<table class="table table-striped table-condensed"><tbody>';
 
   table += '<tr><th colspan="1">Age</th><th></th>'; 
   for(var i=0;i<mpl;i++)
@@ -40,11 +99,17 @@ function draw_chart() {
     if(i%mpl==0)
       table += '<tr><th>' + (i/12) + '</th><th>' + (year+(i/12)) + '</th>';
     
-    p= (i == now) ? 'X' : '.';
+    if(i==now) {
+      p='<i class="present icon-ok-sign"></i>'
+    } else if(i<now) {
+      p='<i class="past icon-circle icon-muted"></i>';
+    } else {
+      p='<i class="future icon-circle-blank"></i>';
+    }
 
     table += '<td align="center">' + p + '</td>';
     if((i+1)%mpl==0)
-      table += '<th>' + (year+((i+1)/12)) + '</th><th>' + Math.floor(i/12) + '</tr>';
+      table += '<th>' + (year+((i+1)/12)) + '</th><th style="text-align: right;">' + Math.floor(i/12) + '</th></tr>';
   }
 
   table += '<tr><th colspan="2"></th>'; 
@@ -53,11 +118,12 @@ function draw_chart() {
   table += '</tr>'; 
   table += '</tbody></table>';
 
+  $('#chart').html(table);
+
   // "\n%d months: %d (%.0f%%) lived: %d (%.0f%%) to go!" % [years*12, spent,spent.to_f/(years*12)*100,(years*12)-spent,((years*12)-spent).to_f/(years*12)*100]
   var summary = '<div>' + size + ' months: ' + now + ' (' + round((now/size*100),0) + '%) lived; ' + (size-now) + ' (' + round((size-now)/size*100,0) + '%) to go!</div>';
+  $('#summary').html(summary);
 
-  table += summary;
-  $('#chart').html(table);
 }
 
 jQuery(document).ready(function($) {
@@ -67,20 +133,21 @@ jQuery(document).ready(function($) {
 </script>
 </head>
 <body>
+<div class="container-narrow">
 <h1>936 Months</h1>
-<p>
+<p class="lead">
 You can view your life as a series of 936 months assuming a life expectency of 78.  A month sure doesn't seem that long and when viewed as a whole sure don't look like very many.  Generate your own chart and be sure to make every single month count!</p>
 
-<p>
+<p class="params">
 Birthdate (YYYYMM): <input id="birthdate" value="197710">
 Life Expectancy: <input id="expect" value="78">
 <button id="gobutton" onclick="draw_chart();">Go!</button>
 </p>
-
-<div id="chart">
+<hr>
+<div id="summary"></div>
+<div id="chart"></div>
+<hr>
+<p class="inspired">Inspired by <a href="http://abstrusegoose.com/51">Abstruse Goose #51</a></p>
 </div>
-
-<p>Inspired by <a href="http://abstrusegoose.com/51">Abstruse Goose #51</a></p>
-
 </body>
 </html>
